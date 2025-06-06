@@ -1,61 +1,42 @@
-
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Tag, CreditCard, Briefcase } from "lucide-react";
+import { useData } from "@/lib/data-context";
+import { Briefcase, CreditCard, Plus, Tag, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 const DropdownManager = () => {
-  const [expenseCategories, setExpenseCategories] = useState([
-    'Food & Dining', 'Transportation', 'Shopping', 'Entertainment', 
-    'Bills & Utilities', 'Healthcare', 'Travel', 'Education', 'Others'
-  ]);
-  
-  const [paymentMethods, setPaymentMethods] = useState([
-    'Cash', 'Credit Card', 'Debit Card', 'Bank Transfer', 'Digital Wallet', 'Check'
-  ]);
-  
-  const [incomeSources, setIncomeSources] = useState([
-    'Salary', 'Freelance', 'Business', 'Investment', 'Gift', 'Bonus', 'Rental Income', 'Side Hustle', 'Others'
-  ]);
+  const {
+    expenseCategories,
+    paymentMethods,
+    incomeCategories,
+    addExpenseCategory,
+    removeExpenseCategory,
+    addPaymentMethod,
+    removePaymentMethod,
+    addIncomeCategory,
+    removeIncomeCategory
+  } = useData();
 
   const [newCategory, setNewCategory] = useState("");
   const [newPaymentMethod, setNewPaymentMethod] = useState("");
   const [newIncomeSource, setNewIncomeSource] = useState("");
 
-  const addExpenseCategory = () => {
-    if (newCategory.trim() && !expenseCategories.includes(newCategory.trim())) {
-      setExpenseCategories([...expenseCategories, newCategory.trim()]);
-      setNewCategory("");
-    }
+  const handleAddExpenseCategory = () => {
+    addExpenseCategory(newCategory);
+    setNewCategory("");
   };
 
-  const removeExpenseCategory = (category: string) => {
-    setExpenseCategories(expenseCategories.filter(c => c !== category));
+  const handleAddPaymentMethod = () => {
+    addPaymentMethod(newPaymentMethod);
+    setNewPaymentMethod("");
   };
 
-  const addPaymentMethod = () => {
-    if (newPaymentMethod.trim() && !paymentMethods.includes(newPaymentMethod.trim())) {
-      setPaymentMethods([...paymentMethods, newPaymentMethod.trim()]);
-      setNewPaymentMethod("");
-    }
-  };
-
-  const removePaymentMethod = (method: string) => {
-    setPaymentMethods(paymentMethods.filter(m => m !== method));
-  };
-
-  const addIncomeSource = () => {
-    if (newIncomeSource.trim() && !incomeSources.includes(newIncomeSource.trim())) {
-      setIncomeSources([...incomeSources, newIncomeSource.trim()]);
-      setNewIncomeSource("");
-    }
-  };
-
-  const removeIncomeSource = (source: string) => {
-    setIncomeSources(incomeSources.filter(s => s !== source));
+  const handleAddIncomeSource = () => {
+    addIncomeCategory(newIncomeSource);
+    setNewIncomeSource("");
   };
 
   return (
@@ -90,9 +71,9 @@ const DropdownManager = () => {
                   placeholder="Add new expense category..."
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && addExpenseCategory()}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddExpenseCategory()}
                 />
-                <Button onClick={addExpenseCategory}>
+                <Button onClick={handleAddExpenseCategory}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -117,9 +98,9 @@ const DropdownManager = () => {
                   placeholder="Add new payment method..."
                   value={newPaymentMethod}
                   onChange={(e) => setNewPaymentMethod(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && addPaymentMethod()}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddPaymentMethod()}
                 />
-                <Button onClick={addPaymentMethod}>
+                <Button onClick={handleAddPaymentMethod}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -144,18 +125,18 @@ const DropdownManager = () => {
                   placeholder="Add new income source..."
                   value={newIncomeSource}
                   onChange={(e) => setNewIncomeSource(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && addIncomeSource()}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddIncomeSource()}
                 />
-                <Button onClick={addIncomeSource}>
+                <Button onClick={handleAddIncomeSource}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {incomeSources.map((source) => (
+                {incomeCategories.map((source) => (
                   <Badge key={source} variant="secondary" className="flex items-center gap-2">
                     {source}
                     <button
-                      onClick={() => removeIncomeSource(source)}
+                      onClick={() => removeIncomeCategory(source)}
                       className="text-red-500 hover:text-red-700"
                     >
                       <Trash2 className="h-3 w-3" />
